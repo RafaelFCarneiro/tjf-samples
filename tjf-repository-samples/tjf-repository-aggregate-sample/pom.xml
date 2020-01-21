@@ -1,53 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.tjf.sample.github</groupId>
-	<artifactId>sw-repository-aggregate</artifactId>
+	<parent>
+		<groupId>com.totvs.tjf</groupId>
+		<artifactId>tjf-boot-starter</artifactId>
+		<version>1.13.0-RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<groupId>br.com.starwars</groupId>
+	<artifactId>starwars-familytree</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
-	<name>repository-aggregate</name>
-	<description>Demo project for Spring Boot</description>
+	<name>Star Wars :: repository-aggregate-sample</name>
+	<description>Star Wars Family Tree using TJF's Repository Aggregate</description>
 
 	<properties>
 		<java.version>11</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
 	<dependencies>
+
+		<!-- Spring -->
 		<dependency>
-			<groupId>com.totvs.tjf</groupId>
-			<artifactId>tjf-repository-aggregate</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>2.1.3.RELEASE</version>
 		</dependency>
-		
+
+		<!-- Database -->
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.1.3.RELEASE</version>
-        </dependency>
-		
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.5</version>
+			<scope>runtime</scope>
 		</dependency>
+
+		<!-- TJF -->
+		<dependency>
+			<groupId>com.totvs.tjf</groupId>
+			<artifactId>tjf-repository-aggregate</artifactId>
+		</dependency>
+
+		<!-- Tests -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>jacoco-prepare</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-report</id>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>integration-test-report</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<configuration>
+							<additionalClasspathElements>
+								<additionalClasspathElement>${basedir}/target/classes</additionalClasspathElement>
+							</additionalClasspathElements>
+							<includes>
+								<include>**/*IT.java</include>
+							</includes>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>report-aggregate</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>report-aggregate</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${basedir}/../../../tjf-repository/tjf-repository-aggregate/target/site/jacoco-aggregate</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>
-			<id>central-release</id>
-			<name>TOTVS Java Framework: Release</name>
-			<url>http://maven.engpro.totvs.com.br/artifactory/libs-snapshot</url>
+			<id>tjf-release</id>
+			<name>TOTVS Java Framework: Releases</name>
+			<url>http://maven.engpro.totvs.com.br/artifactory/libs-release/</url>
 		</repository>
 	</repositories>
+
 </project>
